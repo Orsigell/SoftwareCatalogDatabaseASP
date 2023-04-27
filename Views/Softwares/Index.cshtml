@@ -1,0 +1,89 @@
+﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Software>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Discription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Link)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemRequirements)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LicensName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LicenseType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LicensePrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LicenseDuration)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discription)
+            </td>
+            <td>
+            <input type="hidden" name="Image" value="@item.Image" />
+            @if (ViewBag.imageData != null)
+            {
+                <img class="mt-4 mb-4" width="200"
+                src="data:image/jpeg;base64,@(Convert.ToBase64String(ViewBag.imageData))">
+            }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SystemRequirements)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicensName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenseType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicensePrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenseDuration)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

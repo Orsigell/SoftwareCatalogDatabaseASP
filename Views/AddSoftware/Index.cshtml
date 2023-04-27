@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Software>
+<h1>Выбор программы для добавления</h1>
+<div class="form-group">
+	<a asp-controller="Softwares" asp-action="Create" asp-route-fromAddSoftware="true"
+	   class="btn btn-info">Создать нового</a>
+</div>
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>
+			@Html.DisplayNameFor(model => model.Name)
+		</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Name)
+			</td>
+			<td>
+				@using (Html.BeginForm())
+				{
+					<div>
+						<input type="hidden" name="SoftwareId" value="@item.Id" />
+						<input type="submit" value="Выбрать" class="btn btn-primary" />
+					</div>
+				}
+			</td>
+		</tr>
+	}
+</table>
