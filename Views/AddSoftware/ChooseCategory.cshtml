@@ -1,41 +1,35 @@
 ﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Categories>
 <h2>Создание программы: выбор категорий</h2>
 <div class="form-group">
-    <a asp-controller="Categories" asp-action="Create" asp-route-fromAddSoftware="true"
-       class="btn btn-info">Добавить категорию</a>
+    <a asp-controller="Categories" asp-action="Create" asp-route-fromAddSoftware="true" class="btn btn-info">Добавить категорию</a>
 </div>
-<form asp-action="ChooseCategory" class="form-group">
-    <input type="hidden" name="SoftwareId" value="@ViewBag.SoftwareId" />
-
+<form asp-action="ChooseCategory" method="post">
+    <input type="hidden" name="softwareId" value="@ViewBag.SoftwareId" />
     <div class="form-group">
         <label class="control-label">Название ПО:</label>
         <label class="control-label">@ViewBag.Software.Name</label>
     </div>
 
-	<table class="table table-bordered table-hover">
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Name)
-			</th>
-		</tr>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Name)
-				</td>
-				<td>
-					@using (Html.BeginForm())
-					{
-						<div>
-							<input type="hidden" name="CategoriesId" value="@item.Id" />
-							<input type="checkbox" class="btn btn-primary" />
-						</div>
-					}
-				</td>
-			</tr>
-		}
-	</table>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <input type="checkbox" name="selectedCategories" value="@item.Id" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
     <div class="form-group pt-3">
         <input type="submit" value="Выбрать" class="btn btn-primary" />

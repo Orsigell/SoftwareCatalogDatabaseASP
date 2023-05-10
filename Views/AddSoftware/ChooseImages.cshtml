@@ -1,0 +1,61 @@
+﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Screens>
+<form asp-action="ChooseImages" class="form-group" id="chooseImagesForm">
+    <input type="hidden" name="SoftwareId" value="@ViewBag.SoftwareId" />
+
+    <div class="form-group">
+        <label class="control-label">Название ПО:</label>
+        <label class="control-label">@ViewBag.SoftwareName</label>
+    </div>
+
+    <h2>Загрузка скриншотов</h2>
+    <div id="screenshotsContainer">
+        <div class="form-group screenshot">
+            <label class="control-label">Выберите файл:</label>
+            <input type="file" name="screenshots" />
+            <button type="button" class="btn btn-danger remove-screenshot">Удалить</button>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" id="addScreenshot" class="btn btn-info">Добавить еще изображение</button>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Загрузить" class="btn btn-primary" />
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#addScreenshot").click(function () {
+                var newScreenshot = $("#screenshotsContainer .screenshot:first").clone();
+                newScreenshot.find("input[type=file]").val("");
+                $("#screenshotsContainer").append(newScreenshot);
+            });
+
+            $(document).on("click", ".remove-screenshot", function () {
+                $(this).closest(".screenshot").remove();
+            });
+
+            $("#chooseImagesForm").submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        window.location.href = "/Softwares/Index";
+                    },
+                    error: function () {
+                        alert("Ошибка при загрузке изображений.");
+                    }
+                });
+            });
+        });
+    </script>
+}
