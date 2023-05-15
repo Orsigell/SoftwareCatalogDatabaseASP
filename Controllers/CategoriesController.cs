@@ -163,5 +163,20 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         {
           return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        public async Task<IActionResult> DeleteCategory(int softwareId, int categoryId, bool? fromComputerDetails)
+        {
+            var software = _context.Softwares.Include(t => t.Categories).First(t => t.Id == softwareId);
+            var category = _context.Categories.Find(categoryId);
+
+            if (software != null && category != null)
+            {
+                software.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+                if (fromComputerDetails != null && fromComputerDetails.Value)
+                    return RedirectToAction("Details", "Softwares", new { id = softwareId });
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -9,9 +9,10 @@ namespace SoftwareCatalogDatabaseASP.Controllers
     {
         private readonly SoftwareCatalogDBContext _context;
 
-        public AddSoftwareController(SoftwareCatalogDBContext context)
+        public AddSoftwareController(SoftwareCatalogDBContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
         public async Task<IActionResult> Index()
         {
@@ -26,7 +27,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
 
             ViewBag.SoftwareId = softwareId;
             ViewBag.Software = software;
-            return View("ChooseCategory", await _context.Categories.Distinct().ToListAsync());
+            return View("ChooseCategory", await _context.Categories.ToListAsync());
         }
 
         [HttpPost]
@@ -56,7 +57,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return View("ChooseImages", await _context.Screens.ToListAsync());
+            return RedirectToAction(nameof(ChooseImages), new {softwareId = softwareId});
         }
 
 
@@ -73,34 +74,37 @@ namespace SoftwareCatalogDatabaseASP.Controllers
 
             return View(new List<IFormFile>());
         }
-
-
+        private readonly IWebHostEnvironment _appEnvironment;
         [HttpPost]
         public async Task<IActionResult> ChooseImages(int softwareId, List<IFormFile> screenshots)
-		{
-			Software software = await _context.Softwares.Include(s => s.Screens).FirstOrDefaultAsync(s => s.Id == softwareId);
+        {
+            Software software = await _context.Softwares.FindAsync(softwareId);
 
-			if (software == null)
-				return NotFound();
+            if (software == null)
+                return NotFound();
 
-			var newScreens = new List<Screens>();
+            var newScreens = new List<Screens>();
             foreach (var screenshot in screenshots)
             {
                 if (screenshot.Length > 0)
                 {
-                    var filePath = Path.GetTempFileName();
+                    var fileName = Path.GetFileName(screenshot.FileName);
+                    var filePath = Path.Combine(_appEnvironment.WebRootPath, "files", fileName);
+
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await screenshot.CopyToAsync(stream);
                     }
-                    newScreens.Add(new Screens { Screen = filePath, SoftwareId = softwareId });
+
+                    newScreens.Add(new Screens { Screen = "/files/" + fileName, SoftwareId = softwareId });
                 }
             }
 
-            software.Screens.AddRange(newScreens);
+            _context.Screens.AddRange(newScreens);
             await _context.SaveChangesAsync();
 
-			return RedirectToAction("Index", "Softwares");
+            return RedirectToAction("Index", "Softwares");
         }
+
     }
 }

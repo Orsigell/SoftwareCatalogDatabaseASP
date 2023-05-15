@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.GroupBy(c => c.Name).Select(group => group.First()))
             {
                 <tr>
                     <td>

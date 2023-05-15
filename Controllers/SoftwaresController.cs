@@ -38,7 +38,7 @@ appEnvironment)
                 return NotFound();
             }
 
-            var software = await _context.Softwares.Include(s => s.Screens)
+            var software = await _context.Softwares.Include(s => s.Screens).Include(s => s.Categories).Include(s => s.Comments)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (software == null)
             {

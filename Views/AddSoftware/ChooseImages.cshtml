@@ -1,5 +1,5 @@
-﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Screens>
-<form asp-action="ChooseImages" class="form-group" id="chooseImagesForm">
+﻿@model IEnumerable<Microsoft.AspNetCore.Http.IFormFile>
+<form asp-action="ChooseImages" class="form-group" id="chooseImagesForm" enctype="multipart/form-data">
     <input type="hidden" name="SoftwareId" value="@ViewBag.SoftwareId" />
 
     <div class="form-group">

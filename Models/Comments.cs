@@ -4,9 +4,9 @@ namespace SoftwareCatalogDatabaseASP.Models
 {
     public class Comments
     {
-        [Display(Name = "Группа комментариев")]
-        public int Id { get; set; }
-        [Display(Name = "Текст отзыва")]
+        [Display(Name = "Автор комментария")]
+        public string Name { get; set; }
+        [Display(Name = "Текст комментария")]
         public string Text { get; set; }
         [Display(Name = "Программа")]
         public int SoftwareId { get; set; }
