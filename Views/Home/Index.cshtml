@@ -1,8 +1,72 @@
-﻿@{
+﻿<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Software>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-md-3">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-inline" }))
+        {
+        <h3>Выберите категории:</h3>
+        @foreach (Categories category in ViewBag.Categories)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="@category.Name" name="@category.Name" />
+                <label class="form-check-label" for="@category.Name">@category.Name</label>
+            </div>
+        }
+        <br />
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        }
+    </div>
+    <div class="col-md-9">
+        <h1>Программы</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Image)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Discription)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Link)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" name="Image" value="@item.Image" />
+                            @if (ViewBag.imageData != null)
+                            {
+                                <img class="mt-4 mb-4" width="200"
+                                     src="data:image/jpeg;base64,@(Convert.ToBase64String(ViewBag.imageData[item.Id]))">
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Discription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Link)
+                        </td>
+                        <td>
+                            <a asp-controller="Softwares" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Подробнее</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

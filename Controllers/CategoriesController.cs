@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using SoftwareCatalogDatabaseASP.Models;
 
 namespace SoftwareCatalogDatabaseASP.Controllers
@@ -12,10 +13,12 @@ namespace SoftwareCatalogDatabaseASP.Controllers
     public class CategoriesController : Controller
     {
         private readonly SoftwareCatalogDBContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public CategoriesController(SoftwareCatalogDBContext context)
+        public CategoriesController(SoftwareCatalogDBContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Categories
@@ -177,6 +180,42 @@ namespace SoftwareCatalogDatabaseASP.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction("Index");
+        }
+        public FileResult GetReport()
+        {
+            string path = "/Reports/categories_report_template.xlsx";
+            string result = "/Reports/categories_report.xlsx";
+            FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
+            FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage excelPackage = new ExcelPackage(fi))
+            {
+                excelPackage.Workbook.Properties.Author = "Вертоградов И.А.";
+                excelPackage.Workbook.Properties.Title = "Отчёт по категориям";
+                excelPackage.Workbook.Properties.Subject = "Категории";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                //плучаем лист по имени.
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Categories"];
+                //получаем списко пользователей и в цикле заполняем лист данными
+                int startLine = 3;
+                List<Categories> categories = _context.Categories.ToList();
+                foreach (Categories category in categories.GroupBy(c => c.Name).Select(group => group.First()))
+                {
+                    worksheet.Cells[startLine, 1].Value = startLine - 2;
+                    worksheet.Cells[startLine, 2].Value = category.Id;
+                    worksheet.Cells[startLine, 3].Value = category.Name;
+                    startLine++;
+                }
+                //созраняем в новое место
+                excelPackage.SaveAs(fr);
+            }
+            // Тип файла - content-type
+            string file_type =
+           "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            // Имя файла - необязательно
+            string file_name = "categories_report.xlsx";
+            return File(result, file_type, file_name);
         }
     }
 }

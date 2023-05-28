@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using SoftwareCatalogDatabaseASP.Models;
 
 namespace SoftwareCatalogDatabaseASP.Controllers
@@ -14,9 +15,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         private readonly SoftwareCatalogDBContext _context;
         private readonly IWebHostEnvironment _appEnvironment;
 
-
-        public SoftwaresController(SoftwareCatalogDBContext context, IWebHostEnvironment
-appEnvironment)
+        public SoftwaresController(SoftwareCatalogDBContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
             _appEnvironment = appEnvironment;
@@ -202,5 +201,54 @@ appEnvironment)
         {
           return (_context.Softwares?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        public FileResult GetReport()
+        {
+            string path = "/Reports/software_report_template.xlsx";
+            string result = "/Reports/software_report.xlsx";
+            FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
+            FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage excelPackage = new ExcelPackage(fi))
+            {
+                excelPackage.Workbook.Properties.Author = "Вертоградов И.А.";
+                excelPackage.Workbook.Properties.Title = "Отчёт по программам";
+                excelPackage.Workbook.Properties.Subject = "Программы";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                //плучаем лист по имени.
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Software"];
+                //получаем списко пользователей и в цикле заполняем лист данными
+                int startLine = 3;
+                List<Software> softwares = _context.Softwares.ToList();
+                foreach (Software software in softwares)
+                {
+                    worksheet.Cells[startLine, 1].Value = startLine - 2;
+                    worksheet.Cells[startLine, 2].Value = software.Id;
+                    worksheet.Cells[startLine, 3].Value = software.Categories.Count;
+                    worksheet.Cells[startLine, 4].Value = software.Screens.Count;
+                    worksheet.Cells[startLine, 5].Value = software.Comments.Count;
+                    worksheet.Cells[startLine, 6].Value = software.Name;
+                    worksheet.Cells[startLine, 7].Value = software.Discription;
+                    worksheet.Cells[startLine, 8].Value = software.Image;
+                    worksheet.Cells[startLine, 9].Value = software.Link;
+                    worksheet.Cells[startLine, 10].Value = software.SystemRequirements;
+                    worksheet.Cells[startLine, 11].Value = software.LicensName;
+                    worksheet.Cells[startLine, 12].Value = software.LicenseType;
+                    worksheet.Cells[startLine, 13].Value = software.LicensePrice;
+                    worksheet.Cells[startLine, 14].Value = software.LicenseDuration;
+                    startLine++;
+                }
+                //созраняем в новое место
+                excelPackage.SaveAs(fr);
+            }
+            // Тип файла - content-type
+            string file_type =
+           "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            // Имя файла - необязательно
+            string file_name = "software_report.xlsx";
+            return File(result, file_type, file_name);
+        }
+
     }
 }

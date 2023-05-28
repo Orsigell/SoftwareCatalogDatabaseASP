@@ -110,6 +110,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Comments.First().Name)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Comments.First().Text)
             </th>
             <th></th>
@@ -119,6 +122,9 @@
         @foreach (var item in Model.Comments)
         {
             <tr>
+                <td>
+                @Html.DisplayFor(model => item.Name)
+                </td>
                 <td>
                 @Html.DisplayFor(model => item.Text)
                 </td>
