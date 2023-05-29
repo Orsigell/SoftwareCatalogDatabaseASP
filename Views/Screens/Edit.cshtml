@@ -1,11 +1,86 @@
 ﻿@model SoftwareCatalogDatabaseASP.Models.Screens
-
+<style>
+      * {
+    color: white;
+  }
+    body {
+        background-color: #202124;
+        color: #ffffff;
+    }
+    
+    .categories-section {
+        border: 1px solid #333333;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #202124;
+    }
+    
+    .search-section {
+        margin-top: 15px;
+    }
+    
+    .form-check-input {
+        background-color: #333333;
+    }
+    
+    .form-check-label {
+        color: #ffffff;
+    }
+    
+    .form-control {
+        background-color: #333333;
+        color: #ffffff;
+        border-color: #555555;
+    }
+    
+    .btn-primary {
+        background-color: #555555;
+        border-color: #555555;
+    }
+    
+    .program-container {
+        border: 1px solid #333333;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #444444;
+    }
+    
+    .program-image {
+        margin-bottom: 15px;
+    }
+    
+    .program-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .program-description {
+        margin-bottom: 10px;
+    }
+    
+    .program-link {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin-bottom: 10px;
+    }
+    
+    .program-link:hover {
+        text-decoration: underline;
+    }
+    
+    .categories-section .form-check {
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Изменить</h1>
 
 <h4>Screens</h4>
 <hr />
@@ -25,14 +100,14 @@
                 <span asp-validation-for="SoftwareId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-primary">Назад</a>
 </div>
 
 @section Scripts {

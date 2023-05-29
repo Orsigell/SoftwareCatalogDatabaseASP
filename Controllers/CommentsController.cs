@@ -190,7 +190,10 @@ namespace SoftwareCatalogDatabaseASP.Controllers
                     worksheet.Cells[startLine, 1].Value = startLine - 2;
                     worksheet.Cells[startLine, 2].Value = coment.Id;
                     worksheet.Cells[startLine, 3].Value = coment.Text;
-                    worksheet.Cells[startLine, 4].Value = coment.Software;
+                    if (coment.Software!=null)
+                    {
+                        worksheet.Cells[startLine, 4].Value = coment.Software.Name;
+                    }
                     startLine++;
                 }
                 //созраняем в новое место
@@ -202,6 +205,27 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             // Имя файла - необязательно
             string file_name = "comments_report.xlsx";
             return File(result, file_type, file_name);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendComment(string Author, string CommentText, int Id)
+        {
+            TempData["Author"] = Author;
+            TempData["CommentText"] = CommentText;
+
+            if ((Author != null) || (CommentText != null))
+            {
+                Comments comments = new Comments()
+                {
+                    Name = Author,
+                    Text = CommentText,
+                    SoftwareId = Id
+                };
+                _context.Add(comments);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", "Softwares", new { id = Id });
         }
     }
 }

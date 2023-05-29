@@ -4,69 +4,126 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row">
-    <div class="col-md-3">
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-inline" }))
-        {
-        <h3>Выберите категории:</h3>
-        @foreach (Categories category in ViewBag.Categories)
-        {
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="@category.Name" name="@category.Name" />
-                <label class="form-check-label" for="@category.Name">@category.Name</label>
-            </div>
-        }
-        <br />
-        <button type="submit" class="btn btn-primary">Фильтровать</button>
-        }
-    </div>
-    <div class="col-md-9">
-        <h1>Программы</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Image)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Discription)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Link)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
+<style>
+    body {
+        background-color: #202124; /* Новый фоновый цвет страницы и таблицы с категориями (темно-серый) */
+        color: #ffffff; /* Цвет текста */
+    }
+    
+    .categories-section {
+        border: 1px solid #333333; /* Цвет рамки вокруг секции с категориями */
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #202124; /* Фон секции с категориями */
+    }
+    
+    .search-section {
+        margin-top: 15px;
+    }
+    
+    .form-check-input {
+        background-color: #333333; /* Цвет фона для чекбоксов */
+    }
+    
+    .form-check-label {
+        color: #ffffff; /* Цвет текста для чекбоксов */
+    }
+    
+    .form-control {
+        background-color: #333333; /* Цвет фона для текстового поля */
+        color: #ffffff; /* Цвет текста для текстового поля */
+        border-color: #555555; /* Цвет рамки для текстового поля */
+    }
+    
+    .btn-primary {
+        background-color: #555555; /* Цвет фона для кнопки "Фильтровать" */
+        border-color: #555555; /* Цвет рамки для кнопки "Фильтровать" */
+    }
+    
+    .program-container {
+        border: 1px solid #333333; /* Цвет рамки вокруг контейнера с информацией о программе */
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #444444; /* Новый фон контейнера с информацией о программе (светло-серый) */
+    }
+    
+    .program-image {
+        margin-bottom: 15px;
+    }
+    
+    .program-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .program-description {
+        margin-bottom: 10px;
+    }
+    
+    .program-link {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin-bottom: 10px;
+    }
+    
+    .program-link:hover {
+        text-decoration: underline;
+    }
+    
+    .categories-section .form-group {
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 categories-section">
+            @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-inline" }))
+            {
+                <h3>Выберите категории:</h3>
+                <div class="form-group">
+                    @foreach (Categories category in ((List<Categories>)ViewBag.Categories).GroupBy(c => c.Name).Select(group => group.First()))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="@category.Name" name="@category.Name" />
+                            <label class="form-check-label" for="@category.Name">@category.Name</label>
+                        </div>
+                    }
+                </div>
+                <div class="search-section">
+                    <div class="form-group">
+                        <label for="searchText">Поиск по названию:</label>
+                        <input type="text" class="form-control" id="searchText" name="searchText" placeholder="Введите название программы">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Фильтровать</button>
+                </div>
+            }
+        </div>
+        <div class="col-md-9">
+            <h1>Программы</h1>
+            @foreach (var item in Model)
+            {
+                <div class="program-container">
+                    <div class="row">
+                        <div class="col-md-4 program-image">
                             <input type="hidden" name="Image" value="@item.Image" />
                             @if (ViewBag.imageData != null)
                             {
                                 <img class="mt-4 mb-4" width="200"
                                      src="data:image/jpeg;base64,@(Convert.ToBase64String(ViewBag.imageData[item.Id]))">
                             }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Discription)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Link)
-                        </td>
-                        <td>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="program-name">@Html.DisplayFor(modelItem => item.Name)</div>
+                            <div class="program-description">@Html.DisplayFor(modelItem => item.Discription)</div>
                             <a asp-controller="Softwares" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Подробнее</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>

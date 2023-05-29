@@ -15,7 +15,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             _context = context;
             _appEnvironment = appEnvironment;
         }
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> IndexAsync(string searchText)
         {
             var softwares = await _context.Softwares.ToListAsync();
             var categories = await _context.Categories.ToListAsync();
@@ -31,8 +31,14 @@ namespace SoftwareCatalogDatabaseASP.Controllers
                         selectedCategories.Add(category.Name);
                     }
                 }
-
-                softwares = softwares.Where(s => s.Categories.Any(c => selectedCategories.Contains(c.Name))).ToList();
+                if (selectedCategories.Count != 0)
+                {
+                    softwares = softwares.Where(s => s.Categories.Any(c => selectedCategories.Contains(c.Name))).ToList();
+                }
+            }
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                softwares = softwares.Where(s => s.Name.ToLower().Contains(searchText.ToLower())).ToList();
             }
 
             Dictionary<int, byte[]> screensDictionary = new Dictionary<int, byte[]>();
@@ -41,6 +47,8 @@ namespace SoftwareCatalogDatabaseASP.Controllers
                 screensDictionary.Add(item.Id, System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + item.Image));
             }
             ViewBag.imageData = screensDictionary;
+
+            ViewBag.Categories = _context.Categories.ToList();
             return _context.Softwares != null ? View(softwares) :
                 Problem("Entity set 'SoftwareCatalogDBContext.Softwares' is null.");
         }

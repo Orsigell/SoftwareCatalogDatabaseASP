@@ -37,7 +37,7 @@ builder.Services.AddQuartz(q =>
     .ForJob(jobKey)
     .WithIdentity("ReportSender-trigger")
     .StartNow()
-    .WithSimpleSchedule(x => x.WithIntervalInMinutes(1)// настраиваем выполнение действия через 1 минуту
+    .WithSimpleSchedule(x => x.WithIntervalInMinutes(1440)// 24ч
     .RepeatForever()) // бесконечное повторение
     );
 }

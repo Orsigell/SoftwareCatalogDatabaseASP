@@ -1,4 +1,80 @@
 ﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Software>
+<style>
+      * {
+    color: white;
+  }
+    body {
+        background-color: #202124;
+        color: #ffffff;
+    }
+    
+    .categories-section {
+        border: 1px solid #333333;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #202124;
+    }
+    
+    .search-section {
+        margin-top: 15px;
+    }
+    
+    .form-check-input {
+        background-color: #333333;
+    }
+    
+    .form-check-label {
+        color: #ffffff;
+    }
+    
+    .form-control {
+        background-color: #333333;
+        color: #ffffff;
+        border-color: #555555;
+    }
+    
+    .btn-primary {
+        background-color: #555555;
+        border-color: #555555;
+    }
+    
+    .program-container {
+        border: 1px solid #333333;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #444444;
+    }
+    
+    .program-image {
+        margin-bottom: 15px;
+    }
+    
+    .program-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .program-description {
+        margin-bottom: 10px;
+    }
+    
+    .program-link {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin-bottom: 10px;
+    }
+    
+    .program-link:hover {
+        text-decoration: underline;
+    }
+    
+    .categories-section .form-check {
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
 <h1>Выбор программы для добавления</h1>
 <div class="form-group">
 	<a asp-controller="Softwares" asp-action="Create" asp-route-fromAddSoftware="true"

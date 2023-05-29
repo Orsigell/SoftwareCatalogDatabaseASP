@@ -1,14 +1,93 @@
-﻿@model SoftwareCatalogDatabaseASP.Models.Software
-
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using static SoftwareCatalogDatabaseASP.Controllers.SoftwaresController
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model SoftwareCatalogDatabaseASP.Models.Software
+<style>
+      * {
+    color: white;
+  }
+    body {
+        background-color: #202124; /* Новый фоновый цвет страницы и таблицы с категориями (темно-серый) */
+        color: #ffffff; /* Цвет текста */
+    }
+    
+    .categories-section {
+        border: 1px solid #333333; /* Цвет рамки вокруг секции с категориями */
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #202124; /* Фон секции с категориями */
+    }
+    
+    .search-section {
+        margin-top: 15px;
+    }
+    
+    .form-check-input {
+        background-color: #333333; /* Цвет фона для чекбоксов */
+    }
+    
+    .form-check-label {
+        color: #ffffff; /* Цвет текста для чекбоксов */
+    }
+    
+    .form-control {
+        background-color: #333333; /* Цвет фона для текстового поля */
+        color: #ffffff; /* Цвет текста для текстового поля */
+        border-color: #555555; /* Цвет рамки для текстового поля */
+    }
+    
+    .btn-primary {
+        background-color: #555555; /* Цвет фона для кнопки "Фильтровать" */
+        border-color: #555555; /* Цвет рамки для кнопки "Фильтровать" */
+    }
+    
+    .program-container {
+        border: 1px solid #333333; /* Цвет рамки вокруг контейнера с информацией о программе */
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #444444; /* Новый фон контейнера с информацией о программе (светло-серый) */
+    }
+    
+    .program-image {
+        margin-bottom: 15px;
+    }
+    
+    .program-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .program-description {
+        margin-bottom: 10px;
+    }
+    
+    .program-link {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin-bottom: 10px;
+    }
+    
+    .program-link:hover {
+        text-decoration: underline;
+    }
+    
+    .categories-section .form-check {
+        display: block; /* Сделать вывод категорий вертикальным */
+        margin-bottom: 10px; /* Добавить небольшой отступ между категориями */
+    }
+</style>
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Подробно</h1>
 
 <div>
-    <h4>Software</h4>
+    <h4>Программное обеспечение</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -96,7 +175,7 @@
                     @Html.DisplayFor(model => item.Name)
                     </td>
                     <td>
-                    <a asp-controller="Categories" asp-action="DeleteCategory" asp-route-softwareId="@Model.Id" asp-route-categoryId ="@item.Id" asp-route-fromComputerDetails ="@true">Удалить</a>
+                    <a asp-controller="Categories" asp-action="DeleteCategory" asp-route-softwareId="@Model.Id" asp-route-categoryId ="@item.Id" asp-route-fromComputerDetails ="@true" class="btn btn-primary">Удалить</a>
                     </td>
                 </tr>
         }
@@ -134,7 +213,22 @@
 </table>
 </div>
 
+<form asp-controller="Comments" asp-action="SendComment" method="post">
+    <div class="form-group">
+        <label for="Author">Автор комментария</label>
+        <input class="form-control" type="text" name="Author" />
+    </div>
+    <div class="form-group">
+        <label for="CommentText">Текст комментария</label>
+        <textarea class="form-control" name="CommentText"></textarea>
+    </div>
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <button type="submit" class="btn btn-primary">Добавить комментарий</button>
+</form>
+
+
+|
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Изменить</a> |
+    <a asp-action="Index" class="btn btn-primary">Назад</a>
 </div>

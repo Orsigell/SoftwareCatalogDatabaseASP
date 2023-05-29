@@ -134,7 +134,7 @@ namespace SoftwareCatalogDatabaseASP.Areas.Identity.Pages.Account
                     await _roleManager.CreateAsync(new IdentityRole("coach"));
                 if (!await _roleManager.RoleExistsAsync("guest"))
                     await _roleManager.CreateAsync(new IdentityRole("guest"));
-                await _userManager.AddToRoleAsync(user, "guest");
+                await _userManager.AddToRoleAsync(user, "admin");
 
                 if (result.Succeeded)
                 {

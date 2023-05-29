@@ -1,5 +1,80 @@
 ﻿@model IEnumerable<SoftwareCatalogDatabaseASP.Models.Software>
-
+<style>
+      * {
+    color: white;
+  }
+    body {
+        background-color: #202124; /* Новый фоновый цвет страницы и таблицы с категориями (темно-серый) */
+        color: #ffffff; /* Цвет текста */
+    }
+    
+    .categories-section {
+        border: 1px solid #333333; /* Цвет рамки вокруг секции с категориями */
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #202124; /* Фон секции с категориями */
+    }
+    
+    .search-section {
+        margin-top: 15px;
+    }
+    
+    .form-check-input {
+        background-color: #333333; /* Цвет фона для чекбоксов */
+    }
+    
+    .form-check-label {
+        color: #ffffff; /* Цвет текста для чекбоксов */
+    }
+    
+    .form-control {
+        background-color: #333333; /* Цвет фона для текстового поля */
+        color: #ffffff; /* Цвет текста для текстового поля */
+        border-color: #555555; /* Цвет рамки для текстового поля */
+    }
+    
+    .btn-primary {
+        background-color: #555555; /* Цвет фона для кнопки "Фильтровать" */
+        border-color: #555555; /* Цвет рамки для кнопки "Фильтровать" */
+    }
+    
+    .program-container {
+        border: 1px solid #333333; /* Цвет рамки вокруг контейнера с информацией о программе */
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #444444; /* Новый фон контейнера с информацией о программе (светло-серый) */
+    }
+    
+    .program-image {
+        margin-bottom: 15px;
+    }
+    
+    .program-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .program-description {
+        margin-bottom: 10px;
+    }
+    
+    .program-link {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin-bottom: 10px;
+    }
+    
+    .program-link:hover {
+        text-decoration: underline;
+    }
+    
+    .categories-section .form-check {
+        display: block; /* Сделать вывод категорий вертикальным */
+        margin-bottom: 10px; /* Добавить небольшой отступ между категориями */
+    }
+</style>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,10 +82,10 @@
 
 <a asp-action="GetReport" class="btn btn-info">Создать отчёт</a>
 
-<h1>Index</h1>
+<h1>Программное обеспечение</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Создать</a>
 </p>
 <table class="table">
     <thead>
@@ -81,9 +156,12 @@
                 @Html.DisplayFor(modelItem => item.LicenseDuration)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            @if (User.IsInRole("admin") || User.IsInRole("coach"))
+            {
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Изменить</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary">Удалить</a>
+            }
+            <a asp-controller="Softwares" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Подробнее</a>
             </td>
         </tr>
 }

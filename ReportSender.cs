@@ -26,7 +26,7 @@ namespace SoftwareCatalogDatabaseASP
         public void GetSoftwareReport()
         {
             string path = "/Reports/software_report_template.xlsx";
-            string result = "/Reports/software_report.xlsx";
+            string result = "/Reports/software_reportR.xlsx";
             FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -66,7 +66,7 @@ namespace SoftwareCatalogDatabaseASP
         public void GetCommentsReport()
         {
             string path = "/Reports/comments_report_template.xlsx";
-            string result = "/Reports/comments_report.xlsx";
+            string result = "/Reports/comments_reportR.xlsx";
             FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
             FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -87,7 +87,10 @@ namespace SoftwareCatalogDatabaseASP
                     worksheet.Cells[startLine, 1].Value = startLine - 2;
                     worksheet.Cells[startLine, 2].Value = coment.Id;
                     worksheet.Cells[startLine, 3].Value = coment.Text;
-                    worksheet.Cells[startLine, 4].Value = coment.Software;
+                    if (coment.Software != null)
+                    {
+                        worksheet.Cells[startLine, 4].Value = coment.Software.Name;
+                    }
                     startLine++;
                 }
                 string file_path_report = _appEnvironment.WebRootPath + result;
@@ -97,7 +100,7 @@ namespace SoftwareCatalogDatabaseASP
         public void GetCategoriesReport()
         {
             string path = "/Reports/categories_report_template.xlsx";
-            string result = "/Reports/categories_report.xlsx";
+            string result = "/Reports/categories_reportR.xlsx";
             FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
             FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -127,9 +130,9 @@ namespace SoftwareCatalogDatabaseASP
         delegate void SoftwareReportDelegate();
         public async Task Execute(IJobExecutionContext context)
         {
-            file_path_report_soft = _appEnvironment.WebRootPath + "/Reports/software_report.xlsx";
-            file_path_report_comment = _appEnvironment.WebRootPath + "/Reports/comments_report.xlsx";
-            file_path_report_categories = _appEnvironment.WebRootPath + "/Reports/categories_report.xlsx";
+            file_path_report_soft = _appEnvironment.WebRootPath + "/Reports/software_reportR.xlsx";
+            file_path_report_comment = _appEnvironment.WebRootPath + "/Reports/comments_reportR.xlsx";
+            file_path_report_categories = _appEnvironment.WebRootPath + "/Reports/categories_reportR.xlsx";
 
             try
             {
