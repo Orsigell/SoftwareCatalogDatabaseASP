@@ -40,7 +40,7 @@ namespace SoftwareCatalogDatabaseASP
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Software"];
                 //получаем списко пользователей и в цикле заполняем лист данными
                 int startLine = 3;
-                List<Software> softwares = _context.Softwares.ToList();
+                List<Software> softwares = _context.Softwares.Include(s => s.Screens).Include(s => s.Comments).Include(s => s.Categories).ToList();
                 foreach (Software software in softwares)
                 {
                     worksheet.Cells[startLine, 1].Value = startLine - 2;
@@ -81,7 +81,7 @@ namespace SoftwareCatalogDatabaseASP
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Comments"];
                 //получаем списко пользователей и в цикле заполняем лист данными
                 int startLine = 3;
-                List<Comments> comments = _context.Comments.ToList();
+                List<Comments> comments = _context.Comments.Include(s => s.Software).ToList();
                 foreach (Comments coment in comments)
                 {
                     worksheet.Cells[startLine, 1].Value = startLine - 2;

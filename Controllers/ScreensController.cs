@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Screens
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Index()
         {
             var softwareCatalogDBContext = _context.Screens.Include(s => s.Software);
@@ -26,6 +28,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Screens/Details/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Screens == null)
@@ -45,6 +48,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Screens/Create
+        [Authorize(Roles = "admin, coach")]
         public IActionResult Create()
         {
             ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Id");
@@ -56,6 +60,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Create([Bind("Id,Screen,SoftwareId")] Screens screens)
         {
             if (ModelState.IsValid)
@@ -69,6 +74,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Screens/Edit/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Screens == null)
@@ -90,6 +96,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Screen,SoftwareId")] Screens screens)
         {
             if (id != screens.Id)
@@ -122,6 +129,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Screens/Delete/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Screens == null)
@@ -143,6 +151,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // POST: Screens/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Screens == null)

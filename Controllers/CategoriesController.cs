@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Categories
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Index()
         {
             var softwareCatalogDBContext = _context.Categories.Include(c => c.Software);
@@ -29,6 +31,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Categories/Details/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Categories == null)
@@ -48,6 +51,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Categories/Create
+        [Authorize(Roles = "admin, coach")]
         public IActionResult Create()
         {
             ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Id");
@@ -59,6 +63,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Create([Bind("Id,Name,SoftwareId")] Categories categories)
         {
             if (ModelState.IsValid)
@@ -72,6 +77,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Categories/Edit/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Categories == null)
@@ -93,6 +99,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,SoftwareId")] Categories categories)
         {
             if (id != categories.Id)
@@ -125,6 +132,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Categories == null)
@@ -144,6 +152,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // POST: Categories/Delete/5
+        [Authorize(Roles = "admin, coach")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -161,11 +170,13 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "admin, coach")]
 
         private bool CategoriesExists(int id)
         {
           return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> DeleteCategory(int softwareId, int categoryId, bool? fromComputerDetails)
         {
             var software = _context.Softwares.Include(t => t.Categories).First(t => t.Id == softwareId);
@@ -181,6 +192,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             }
             return RedirectToAction("Index");
         }
+        [Authorize(Roles = "admin, coach")]
         public FileResult GetReport()
         {
             string path = "/Reports/categories_report_template.xlsx";

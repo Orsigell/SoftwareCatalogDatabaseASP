@@ -6,17 +6,17 @@
 <style>
       * {
     color: white;
-  }
+    }
     body {
-        background-color: #202124; /* Новый фоновый цвет страницы и таблицы с категориями (темно-серый) */
-        color: #ffffff; /* Цвет текста */
+        background-color: #202124; 
+        color: #ffffff;
     }
     
     .categories-section {
-        border: 1px solid #333333; /* Цвет рамки вокруг секции с категориями */
+        border: 1px solid #333333;
         padding: 15px;
         margin-bottom: 15px;
-        background-color: #202124; /* Фон секции с категориями */
+        background-color: #202124; 
     }
     
     .search-section {
@@ -24,29 +24,29 @@
     }
     
     .form-check-input {
-        background-color: #333333; /* Цвет фона для чекбоксов */
+        background-color: #333333;
     }
     
     .form-check-label {
-        color: #ffffff; /* Цвет текста для чекбоксов */
+        color: #ffffff;
     }
     
     .form-control {
-        background-color: #333333; /* Цвет фона для текстового поля */
-        color: #ffffff; /* Цвет текста для текстового поля */
-        border-color: #555555; /* Цвет рамки для текстового поля */
+        background-color: #333333; 
+        color: #ffffff;
+        border-color: #555555;
     }
     
     .btn-primary {
-        background-color: #555555; /* Цвет фона для кнопки "Фильтровать" */
-        border-color: #555555; /* Цвет рамки для кнопки "Фильтровать" */
+        background-color: #555555;
+        border-color: #555555; 
     }
     
     .program-container {
-        border: 1px solid #333333; /* Цвет рамки вокруг контейнера с информацией о программе */
+        border: 1px solid #333333;
         padding: 15px;
         margin-bottom: 15px;
-        background-color: #444444; /* Новый фон контейнера с информацией о программе (светло-серый) */
+        background-color: #444444; 
     }
     
     .program-image {
@@ -75,8 +75,36 @@
     }
     
     .categories-section .form-check {
-        display: block; /* Сделать вывод категорий вертикальным */
-        margin-bottom: 10px; /* Добавить небольшой отступ между категориями */
+        display: block; 
+        margin-bottom: 10px;
+    }
+    .screenshot {
+        display: inline-block;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .screenshot:hover {
+        transform: scale(1.1);
+    }
+
+    #screenshot-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+    }
+
+    #screenshot-modal img {
+        display: block;
+        margin: auto;
+        max-width: 90%;
+        max-height: 90%;
+        margin-top: 5%;
     }
 </style>
 @{
@@ -152,9 +180,30 @@
     </dl>
         @foreach (var item in ViewBag.screens)
         {
-            <img class="mt-4 mb-4" width="200"
-             src="data:image/jpeg;base64,@(Convert.ToBase64String(item))">
+            <div class="screenshot" data-toggle="modal" data-target="#screenshot-modal">
+                <img class="mt-4 mb-4" width="200" src="data:image/jpeg;base64,@(Convert.ToBase64String(item))">
+            </div>
         }
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var screenshots = document.querySelectorAll(".screenshot");
+        var modal = document.getElementById("screenshot-modal");
+        var modalImage = document.getElementById("screenshot-modal-image");
+
+        screenshots.forEach(function(screenshot) {
+            screenshot.addEventListener("click", function() {
+                var image = this.querySelector("img");
+                modalImage.src = image.src;
+                modal.style.display = "block";
+            });
+        });
+
+        modal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+    });
+</script>
+
 </div>
 <div>
     <h4>Список категорий</h4>
@@ -174,15 +223,18 @@
                     <td>
                     @Html.DisplayFor(model => item.Name)
                     </td>
+                    @if (User.IsInRole("admin") || User.IsInRole("coach"))
+                    {
                     <td>
                     <a asp-controller="Categories" asp-action="DeleteCategory" asp-route-softwareId="@Model.Id" asp-route-categoryId ="@item.Id" asp-route-fromComputerDetails ="@true" class="btn btn-primary">Удалить</a>
                     </td>
+                    }
                 </tr>
         }
     </tbody>
 </table>
 </div>
-
+<a asp-action="GetAnalogReport" asp-route-softwareId="@Model.Id" class="btn btn-info">Составить отчёт по аналогам программы</a>
 <div>
     <h4>Комментарии</h4>
     <table class="table">
@@ -231,4 +283,7 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Изменить</a> |
     <a asp-action="Index" class="btn btn-primary">Назад</a>
+</div>
+<div id="screenshot-modal">
+    <img id="screenshot-modal-image">
 </div>

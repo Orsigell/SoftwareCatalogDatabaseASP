@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using SoftwareCatalogDatabaseASP.Models;
@@ -14,11 +15,13 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             _context = context;
             _appEnvironment = appEnvironment;
         }
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Softwares.ToListAsync());
 		}
 		[HttpPost]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Index(int softwareId)
         {
             Software software = await _context.Softwares.Include(s => s.Categories).FirstOrDefaultAsync(s => s.Id == softwareId);
@@ -31,6 +34,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> ChooseCategory(int softwareId, int[] selectedCategories)
         {
             Software software = await _context.Softwares.Include(s => s.Categories).FirstOrDefaultAsync(s => s.Id == softwareId);
@@ -62,6 +66,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> ChooseImages(int softwareId)
         {
             Software software = await _context.Softwares.FindAsync(softwareId);
@@ -75,7 +80,9 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             return View(new List<IFormFile>());
         }
         private readonly IWebHostEnvironment _appEnvironment;
+
         [HttpPost]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> ChooseImages(int softwareId, List<IFormFile> screenshots)
         {
             Software software = await _context.Softwares.FindAsync(softwareId);

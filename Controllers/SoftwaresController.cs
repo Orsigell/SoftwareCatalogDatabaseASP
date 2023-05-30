@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -62,6 +63,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Softwares/Create
+        [Authorize(Roles = "admin, coach")]
         public IActionResult Create()
         {
             return View();
@@ -72,6 +74,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Create([Bind("Id,Name,Discription,Image,Link,SystemRequirements,LicensName,LicenseType,LicensePrice,LicenseDuration")] Software software, IFormFile upload)
         {
             if (ModelState.IsValid)
@@ -92,6 +95,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             return View(software);
         }
         // GET: Softwares/Edit/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Softwares == null)
@@ -121,6 +125,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Discription,Image,Link,SystemRequirements,LicensName,LicenseType,LicensePrice,LicenseDuration")] Software software)
         {
             if (id != software.Id)
@@ -161,6 +166,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
 
         // GET: Softwares/Delete/5
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Softwares == null)
@@ -181,6 +187,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         // POST: Softwares/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Softwares == null)
@@ -197,11 +204,61 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SoftwareExists(int id)
+        private bool SoftwareExists(int softwareId)
         {
-          return (_context.Softwares?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Softwares?.Any(e => e.Id == softwareId)).GetValueOrDefault();
         }
+        public FileResult GetAnalogReport(int softwareId)
+        {
+            string path = "/Reports/software_analogReport_template.xlsx";
+            string result = "/Reports/software_analogReport.xlsx";
+            FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
+            FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
+            using (ExcelPackage excelPackage = new ExcelPackage(fi))
+            {
+                excelPackage.Workbook.Properties.Author = "Вертоградов И.А.";
+                excelPackage.Workbook.Properties.Title = "Отчёт по аналогам программамы " + _context.Softwares.First(s=>s.Id == softwareId).Name;
+                excelPackage.Workbook.Properties.Subject = "Аналоги";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Software"];
+                int startLine = 3;
+
+                var currentSoftwareCategories = _context.Categories.ToList()
+                    .Where(c => c.SoftwareId == softwareId)
+                    .Select(c => c.Name)
+                    .ToList();
+
+                var selectedSoftwares = _context.Softwares.Include(s => s.Comments).Include(s => s.Categories).ToList()
+                    .Where(s => s.Categories.Any(c => currentSoftwareCategories.Contains(c.Name)))
+                    .ToList();
+                foreach (Software software in selectedSoftwares)
+                {
+                    worksheet.Cells[startLine, 1].Value = startLine - 2;
+                    worksheet.Cells[startLine, 2].Value = software.Comments.Count;
+                    worksheet.Cells[startLine, 3].Value = software.Name;
+                    worksheet.Cells[startLine, 4].Value = software.Discription;
+                    worksheet.Cells[startLine, 5].Value = software.Image;
+                    worksheet.Cells[startLine, 6].Value = software.Link;
+                    worksheet.Cells[startLine, 7].Value = software.SystemRequirements;
+                    worksheet.Cells[startLine, 8].Value = software.LicensName;
+                    worksheet.Cells[startLine, 9].Value = software.LicenseType;
+                    worksheet.Cells[startLine, 10].Value = software.LicensePrice;
+                    worksheet.Cells[startLine, 11].Value = software.LicenseDuration;
+                    startLine++;
+                }
+                //созраняем в новое место
+                excelPackage.SaveAs(fr);
+            }
+            // Тип файла - content-type
+            string file_type =
+           "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            // Имя файла - необязательно
+            string file_name = "software_analogReport.xlsx";
+            return File(result, file_type, file_name);
+        }
+        [Authorize(Roles = "admin, coach")]
         public FileResult GetReport()
         {
             string path = "/Reports/software_report_template.xlsx";
@@ -220,7 +277,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Software"];
                 //получаем списко пользователей и в цикле заполняем лист данными
                 int startLine = 3;
-                List<Software> softwares = _context.Softwares.ToList();
+                List<Software> softwares = _context.Softwares.Include(s => s.Screens).Include(s => s.Comments).Include(s => s.Categories).ToList();
                 foreach (Software software in softwares)
                 {
                     worksheet.Cells[startLine, 1].Value = startLine - 2;
