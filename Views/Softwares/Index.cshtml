@@ -73,6 +73,10 @@
     .categories-section .form-check {
         display: block; 
         margin-bottom: 10px;
+    }    
+    .program-image {
+        max-width: 200px;
+        max-height: 200px;
     }
 </style>
 @{
@@ -134,12 +138,7 @@
                 @Html.DisplayFor(modelItem => item.Discription)
             </td>
             <td>
-            <input type="hidden" name="Image" value="@item.Image" />
-            @if (ViewBag.imageData != null)
-            {
-                <img class="mt-4 mb-4" width="200"
-                src="data:image/jpeg;base64,@(Convert.ToBase64String(ViewBag.imageData))">
-            }
+               <img src="@Html.DisplayFor(modelItem => item.Image)" alt="Screen" class="program-image" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Link)

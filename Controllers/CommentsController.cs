@@ -54,7 +54,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         [Authorize(Roles = "admin, coach")]
         public IActionResult Create()
         {
-            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Id");
+            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Name");
             return View();
         }
 
@@ -90,7 +90,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             {
                 return NotFound();
             }
-            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Id", comments.SoftwareId);
+            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Name", comments.SoftwareId);
             return View(comments);
         }
 
@@ -218,6 +218,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, coach, guest")]
         public async Task<IActionResult> SendComment(string Author, string CommentText, int Id)
         {
             TempData["Author"] = Author;

@@ -2,15 +2,91 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Вход";
 }
+<style>
+    * {
+        color: white;
+    }
 
+    body {
+        background-color: #202124;
+        color: #ffffff;
+    }
+
+    .categories-section {
+        border: 1px solid #333333;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #202124;
+    }
+
+    .search-section {
+        margin-top: 15px;
+    }
+
+    .form-check-input {
+        background-color: #333333;
+    }
+
+    .form-check-label {
+        color: #ffffff;
+    }
+
+    .form-control {
+        background-color: #333333;
+        color: #ffffff;
+        border-color: #555555;
+    }
+
+    .btn-primary {
+        background-color: #555555;
+        border-color: #555555;
+    }
+
+    .program-container {
+        border: 1px solid #333333;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #444444;
+    }
+
+    .program-image {
+        margin-bottom: 15px;
+    }
+
+    .program-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .program-description {
+        margin-bottom: 10px;
+    }
+
+    .program-link {
+        display: block;
+        color: #ffffff;
+        text-decoration: none;
+        margin-bottom: 10px;
+    }
+
+    .program-link:hover {
+        text-decoration: underline;
+    }
+
+    .categories-section .form-check {
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
+                <h2>Используйте локальную учетную запись для входа.</h2>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-floating">
@@ -32,50 +108,20 @@
                     </div>
                 </div>
                 <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Войти</button>
                 </div>
                 <div>
                     <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                        <a id="forgot-password" asp-page="./ForgotPassword">Забыли пароль?</a>
                     </p>
                     <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Зарегистрироваться как новый пользователь</a>
                     </p>
                     <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Отправить подтверждение по электронной почте повторно</a>
                     </p>
                 </div>
             </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
         </section>
     </div>
 </div>

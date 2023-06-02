@@ -112,7 +112,7 @@
                 @Html.DisplayFor(modelItem => item.Text)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Software.Id)
+                @Html.DisplayFor(modelItem => item.Software.Name)
             </td>
             <td>
             @if (User.IsInRole("admin") || User.IsInRole("coach"))

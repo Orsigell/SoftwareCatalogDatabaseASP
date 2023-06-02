@@ -73,6 +73,10 @@
     .categories-section .form-check {
         display: block;
         margin-bottom: 10px;
+    }    
+    .program-image {
+        max-width: 200px;
+        max-height: 200px;
     }
 </style>
 @{
@@ -101,10 +105,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Screen)
+               <img src="@item.Screen" alt="Screen" class="program-image" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Software.Id)
+                @Html.DisplayFor(modelItem => item.Software.Name)
             </td>
             <td>
             @if (User.IsInRole("admin") || User.IsInRole("coach"))

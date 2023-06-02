@@ -239,13 +239,12 @@ namespace SoftwareCatalogDatabaseASP.Controllers
                     worksheet.Cells[startLine, 2].Value = software.Comments.Count;
                     worksheet.Cells[startLine, 3].Value = software.Name;
                     worksheet.Cells[startLine, 4].Value = software.Discription;
-                    worksheet.Cells[startLine, 5].Value = software.Image;
-                    worksheet.Cells[startLine, 6].Value = software.Link;
-                    worksheet.Cells[startLine, 7].Value = software.SystemRequirements;
-                    worksheet.Cells[startLine, 8].Value = software.LicensName;
-                    worksheet.Cells[startLine, 9].Value = software.LicenseType;
-                    worksheet.Cells[startLine, 10].Value = software.LicensePrice;
-                    worksheet.Cells[startLine, 11].Value = software.LicenseDuration;
+                    worksheet.Cells[startLine, 5].Value = software.Link;
+                    worksheet.Cells[startLine, 6].Value = software.SystemRequirements;
+                    worksheet.Cells[startLine, 7].Value = software.LicensName;
+                    worksheet.Cells[startLine, 8].Value = software.LicenseType;
+                    worksheet.Cells[startLine, 9].Value = software.LicensePrice;
+                    worksheet.Cells[startLine, 10].Value = software.LicenseDuration;
                     startLine++;
                 }
                 //созраняем в новое место

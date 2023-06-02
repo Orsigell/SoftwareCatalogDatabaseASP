@@ -81,7 +81,7 @@ namespace SoftwareCatalogDatabaseASP.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Запомнить меня?")]
             public bool RememberMe { get; set; }
         }
 
@@ -94,7 +94,7 @@ namespace SoftwareCatalogDatabaseASP.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
+            // Очистить существующие внешние cookie, чтобы гарантировать чистый процесс входа в систему
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -110,12 +110,12 @@ namespace SoftwareCatalogDatabaseASP.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                // Это не учитывает ошибки входа в систему для блокировки учетной записи
+                // Чтобы разрешить ошибки входа в систему по паролю вызывать блокировку учетной записи, установите lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("Пользователь вошел в систему.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -124,17 +124,17 @@ namespace SoftwareCatalogDatabaseASP.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning("Учетная запись пользователя заблокирована.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Недопустимая попытка входа в систему.");
                     return Page();
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // Если мы добрались до этого места, что-то пошло не так, повторно отобразить форму
             return Page();
         }
     }

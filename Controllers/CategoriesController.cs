@@ -54,7 +54,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
         [Authorize(Roles = "admin, coach")]
         public IActionResult Create()
         {
-            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Id");
+            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Name");
             return View();
         }
 
@@ -90,7 +90,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
             {
                 return NotFound();
             }
-            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Id", categories.SoftwareId);
+            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Name", categories.SoftwareId);
             return View(categories);
         }
 
