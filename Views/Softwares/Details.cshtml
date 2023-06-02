@@ -280,8 +280,11 @@
 
 
 |
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Изменить</a> |
+<div>                   
+    @if (User.IsInRole("admin") || User.IsInRole("coach"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Изменить</a>
+    }
     <a asp-action="Index" class="btn btn-primary">Назад</a>
 </div>
 <div id="screenshot-modal">

@@ -77,7 +77,7 @@
 </style>
 <h2>Создание программы: выбор категорий</h2>
 <div class="form-group">
-    <a asp-controller="Categories" asp-action="Create" asp-route-fromAddSoftware="true" class="btn btn-info">Добавить категорию</a>
+    <a asp-controller="Categories" asp-action="Create" asp-route-softwareId="@ViewBag.SoftwareId" asp-route-fromAddSoftware="true" class="btn btn-info">Добавить категорию</a>
 </div>
 <form asp-action="ChooseCategory" method="post">
     <input type="hidden" name="softwareId" value="@ViewBag.SoftwareId" />
@@ -100,7 +100,12 @@
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
-                        <input type="checkbox" name="selectedCategories" value="@item.Id" />
+                            <input type="checkbox" name="selectedCategories" value="@item.Id" 
+                               @if (Model.Any(c => c.SoftwareId == ((int)ViewBag.SoftwareId) && c.Name == item.Name))
+                                {
+                                    <text>checked</text>
+                                }
+                             />
                     </td>
                 </tr>
             }

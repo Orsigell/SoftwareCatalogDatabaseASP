@@ -52,9 +52,17 @@ namespace SoftwareCatalogDatabaseASP.Controllers
 
         // GET: Categories/Create
         [Authorize(Roles = "admin, coach")]
-        public IActionResult Create()
+        public IActionResult Create(int? softwareId, bool? fromAddSoftware)
         {
-            ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Name");
+            if (fromAddSoftware != null && (bool)(fromAddSoftware))
+            {
+                ViewBag.SoftwareId = softwareId;
+                ViewBag.fromAddSoftware = fromAddSoftware;
+            }
+            else
+            {
+                ViewData["SoftwareId"] = new SelectList(_context.Softwares, "Id", "Name");
+            }
             return View();
         }
 

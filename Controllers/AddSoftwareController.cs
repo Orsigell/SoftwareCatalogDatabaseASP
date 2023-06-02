@@ -42,7 +42,7 @@ namespace SoftwareCatalogDatabaseASP.Controllers
 
             if (software == null)
                 return NotFound();
-
+            software.Categories.Clear();
             foreach (var item in selectedCategories)
             {
                 Categories categories = await _context.Categories.FindAsync(item);

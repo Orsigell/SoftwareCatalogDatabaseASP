@@ -93,11 +93,18 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SoftwareId" class="control-label"></label>
-                <select asp-for="SoftwareId" class ="btn btn-primary" asp-items="ViewBag.SoftwareId"></select>
-            </div>
-            <input type="hidden" asp-for="ToAddSoftware" value="@ViewBag.ToAddSoftware" />
+            @if (!(ViewBag.fromAddSoftware != null && (bool)(ViewBag.fromAddSoftware)))
+            {
+                <div class="form-group">
+                    <label asp-for="SoftwareId" class="control-label"></label>
+                    <select asp-for="SoftwareId" class="btn btn-primary" asp-items="ViewBag.SoftwareId"></select>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="SoftwareId" value="@ViewBag.SoftwareId" />
+                <input type="hidden" asp-for="ToAddSoftware" value="@ViewBag.ToAddSoftware"/>
+            }
             <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
